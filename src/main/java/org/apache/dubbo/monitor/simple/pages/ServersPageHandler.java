@@ -16,36 +16,34 @@
  */
 package org.apache.dubbo.monitor.simple.pages;
 
+import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.dubbo.monitor.simple.common.Menu;
 import org.apache.dubbo.monitor.simple.common.Page;
 import org.apache.dubbo.monitor.simple.servlet.PageHandler;
-import org.apache.dubbo.common.URL;
-import org.apache.dubbo.common.utils.NetUtils;
-import org.apache.dubbo.remoting.exchange.ExchangeServer;
+import org.apache.dubbo.rpc.ProtocolServer;
 import org.apache.dubbo.rpc.protocol.dubbo.DubboProtocol;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
  * ServersPageHandler
  */
 @Menu(name = "Servers", desc = "Show exported service servers.", order = 14000)
-public class ServersPageHandler implements PageHandler
-{
+public class ServersPageHandler implements PageHandler {
 
     @Override
     public Page handle(URL url) {
         List<List<String>> rows = new ArrayList<List<String>>();
-        Collection<ExchangeServer> servers = DubboProtocol.getDubboProtocol().getServers();
+        List<ProtocolServer> servers = DubboProtocol.getDubboProtocol().getServers();
         int clientCount = 0;
         if (servers != null && servers.size() > 0) {
-            for (ExchangeServer s : servers) {
+            for (ProtocolServer s : servers) {
                 List<String> row = new ArrayList<String>();
                 String address = s.getUrl().getAddress();
                 row.add(NetUtils.getHostName(address) + "/" + address);
-                int clientSize = s.getExchangeChannels().size();
+                int clientSize = s.getRemotingServer().getChannels().size();
                 clientCount += clientSize;
                 row.add("<a href=\"clients.html?port=" + s.getUrl().getPort() + "\">Clients(" + clientSize + ")</a>");
                 rows.add(row);

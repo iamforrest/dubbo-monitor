@@ -16,12 +16,12 @@
  */
 package org.apache.dubbo.monitor.simple.pages;
 
-import org.apache.dubbo.monitor.simple.common.Page;
-import org.apache.dubbo.monitor.simple.servlet.PageHandler;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.utils.NetUtils;
-import org.apache.dubbo.remoting.exchange.ExchangeChannel;
-import org.apache.dubbo.remoting.exchange.ExchangeServer;
+import org.apache.dubbo.monitor.simple.common.Page;
+import org.apache.dubbo.monitor.simple.servlet.PageHandler;
+import org.apache.dubbo.remoting.Channel;
+import org.apache.dubbo.rpc.ProtocolServer;
 import org.apache.dubbo.rpc.protocol.dubbo.DubboProtocol;
 
 import java.util.ArrayList;
@@ -31,15 +31,14 @@ import java.util.List;
 /**
  * ClientsPageHandler
  */
-public class ClientsPageHandler implements PageHandler
-{
+public class ClientsPageHandler implements PageHandler {
 
     @Override
     public Page handle(URL url) {
         String port = url.getParameter("port");
         int p = port == null || port.length() == 0 ? 0 : Integer.parseInt(port);
-        Collection<ExchangeServer> servers = DubboProtocol.getDubboProtocol().getServers();
-        ExchangeServer server = null;
+        List<ProtocolServer> servers = DubboProtocol.getDubboProtocol().getServers();
+        ProtocolServer server = null;
         StringBuilder select = new StringBuilder();
         if (servers != null && servers.size() > 0) {
             if (servers.size() == 1) {
@@ -48,7 +47,7 @@ public class ClientsPageHandler implements PageHandler
                 select.append(" &gt; " + NetUtils.getHostName(address) + "/" + address);
             } else {
                 select.append(" &gt; <select onchange=\"window.location.href='clients.html?port=' + this.value;\">");
-                for (ExchangeServer s : servers) {
+                for (ProtocolServer s : servers) {
                     int sp = s.getUrl().getPort();
                     select.append("<option value=\">");
                     select.append(sp);
@@ -65,8 +64,8 @@ public class ClientsPageHandler implements PageHandler
         }
         List<List<String>> rows = new ArrayList<List<String>>();
         if (server != null) {
-            Collection<ExchangeChannel> channels = server.getExchangeChannels();
-            for (ExchangeChannel c : channels) {
+            Collection<Channel> channels = server.getRemotingServer().getChannels();
+            for (Channel c : channels) {
                 List<String> row = new ArrayList<String>();
                 String address = NetUtils.toAddressString(c.getRemoteAddress());
                 row.add(NetUtils.getHostName(address) + "/" + address);

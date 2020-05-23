@@ -1,7 +1,7 @@
-# dubbo-monitor-2.7.3
-针对dubbo2.7.3服务的监控
+# dubbo-monitor
+针对dubbo新版本服务的监控
 
-因为阿里只提供了对dubbo2.6.0版本服务的dubbo-monitor监控, 故在此之上进行了部分修改, 对我司2.7.3的服务进行监控及调用次数进行统计等
+因为阿里只提供了对dubbo2.6.0版本服务的dubbo-monitor监控, 故在此之上进行了部分修改, 对新版本的服务进行监控及调用次数进行统计等
 
 支持同时监控多个注册中心
 
@@ -21,3 +21,6 @@
 作者: Ares
 
 邮箱: xuebing3@asiainfo.com
+
+后续版本维护
+203278@qq.com
